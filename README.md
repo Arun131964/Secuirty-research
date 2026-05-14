@@ -1,5 +1,5 @@
 
-# 🔐 Security Research Portfolio
+# 🔐 Security Research 
 
 > **Bharathaarunkumar** | Aspiring Security Researcher & Bug Hunter  
 > 📧 bharathaarunkumar99@gmail.com  
