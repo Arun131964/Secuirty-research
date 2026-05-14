@@ -1,127 +1,102 @@
-# Business Logic Bypass in Delivery Partner Onboarding via Gmail Alias Abuse
+# 🔐 Vulnerability Report #001
 
-## Summary
-
-The application allows the creation of multiple delivery partner accounts using Gmail email aliasing (`+tag` syntax). The platform does not normalize email addresses before uniqueness validation, allowing a single user to create multiple accounts tied to the same inbox.
-
-This behavior may enable abuse of onboarding workflows, referral systems, incentive programs, and account restriction mechanisms.
-
----
-
-## Vulnerability Type
-
-- Business Logic Flaw
-- Improper Input Validation
-- OWASP Top 10: A04 – Insecure Design
+| Field | Details |
+|---|---|
+| **Title** | Improper Email Validation Allows Multiple Accounts via Email Alias Bypass |
+| **Type** | Business Logic Flaw / Improper Input Validation |
+| **OWASP** | A04 – Insecure Design |
+| **Severity** | 🔴 High |
+| **Date Found** | 2024 |
+| **Status** | Reported |
 
 ---
 
-## Affected Functionality
+## 📌 Summary
+
+The application does not normalize email addresses during registration.
+Email aliases using the `+` character (e.g., `user+alias@gmail.com`) are treated
+as unique identities — even though all emails are delivered to the same inbox.
+
+This allows a single person to create **multiple delivery partner accounts**,
+bypassing uniqueness restrictions and abusing incentive/referral systems.
+
+---
+
+## 🎯 Affected Functionality
 
 - User Registration
 - Delivery Partner Onboarding
-- Incentive / Referral System
+- Incentive / Referral / Bonus System
 
 ---
 
-## Technical Description
+## 🪜 Steps to Reproduce
 
-The application treats Gmail aliases as completely unique email identities during registration.
+1. Register with `victim@gmail.com`
+   → ✅ Verification email received. Account activated.
 
-For example:
+2. Log out.
 
-```text
-example@gmail.com
-example+1@gmail.com
-example+admin@gmail.com
+3. Register with `victim+admin@gmail.com`
+   → ✅ Verification email received. Account activated.
+
+4. Log out.
+
+5. Register with `victim+1@gmail.com`
+   → ✅ Verification email received. Account activated.
+
+> All 3 verification emails were delivered to the **same inbox**.
+> The system treated each alias as a **separate unique account**.
+
+---
+
+## 💥 Impact
+
+An attacker exploiting this can:
+
+- Create unlimited delivery partner accounts from one inbox
+- Claim signup bonuses, referral rewards, and incentives multiple times
+- Bypass one-account-per-person restrictions
+- Evade account bans or poor ratings
+- Manipulate order flows and platform operations
+- Cause **direct financial loss** to the platform
+
+---
+
+## ✅ Proof of Concept
+
+- [x] 3 accounts successfully created using aliases
+- [x] All verification emails received in one inbox
+- [x] No duplicate detection triggered
+- [x] Bypass confirmed on Registration & Delivery Partner Onboarding
+
+> 📎 See `/assets/` folder for screenshots
+
+---
+
+## 🛠️ Recommended Fix
+
+Strip the `+alias` portion before uniqueness checks:
+
+```python
+def normalize_email(email: str) -> str:
+    local, domain = email.split('@')
+    local = local.split('+')[0]
+    return f"{local}@{domain}".lower()
 ```
 
-All emails are delivered to the same Gmail inbox, but the application accepts them as separate accounts.
-
-No canonicalization or normalization is performed before uniqueness validation.
-
----
-
-## Steps to Reproduce
-
-1. Register an account using:
-
-```text
-example@gmail.com
-```
-
-2. Verify the account.
-
-3. Log out.
-
-4. Register another account using:
-
-```text
-example+1@gmail.com
-```
-
-5. Verify the account.
-
-6. Observe that a second account is successfully created.
-
-7. Repeat using additional aliases:
-
-```text
-example+admin@gmail.com
-example+test@gmail.com
-```
+Apply this at:
+- ✅ Registration
+- ✅ Login
+- ✅ Any account lookup or duplicate check
 
 ---
 
-## Proof of Concept
+## 🔗 References
 
-- Multiple accounts successfully created
-- All verification emails received in the same inbox
-- No duplicate detection triggered
-- Delivery partner onboarding allowed for multiple accounts
+- [OWASP A04 – Insecure Design](https://owasp.org/Top10/A04_2021-Insecure_Design/)
+- [Gmail Address Aliasing](https://support.google.com/mail/answer/22370)
 
 ---
 
-## Impact
-
-An attacker may be able to:
-
-- Create multiple delivery partner accounts
-- Abuse signup bonuses or referral rewards
-- Bypass one-account-per-user restrictions
-- Evade account bans or negative ratings
-- Manipulate platform operations
-
-This issue weakens identity assurance controls and may result in operational and financial abuse.
-
----
-
-## Severity Assessment
-
-Low to Medium
-
-The issue becomes more severe when financial incentives, onboarding rewards, or operational trust mechanisms rely solely on email uniqueness.
-
----
-
-## Recommended Remediation
-
-- Normalize email addresses before uniqueness checks
-- Strip Gmail alias components (`+tag`)
-- Apply email canonicalization
-- Enforce stronger identity verification
-- Detect duplicate KYC, phone number, or device identifiers
-
----
-
-## References
-
-- OWASP Business Logic Vulnerabilities
-- OWASP Top 10 – A04: Insecure Design
-
----
-
-## Disclaimer
-
-This report is shared strictly for educational and responsible disclosure purposes.
-No malicious exploitation was performed.
+*Report by Bharathaarunkumar | Responsible Disclosure Practiced*
