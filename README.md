@@ -1,10 +1,9 @@
-# Secuirty-research
-Security research reports, vulnerability writeups, and responsible disclosure case studies
+
 # 🔐 Security Research Portfolio
 
 > **Bharathaarunkumar** | Aspiring Security Researcher & Bug Hunter  
 > 📧 bharathaarunkumar99@gmail.com  
-> 🔗 [LinkedIn](#) | [Twitter/X](#)
+> 🔗 [LinkedIn](https://www.linkedin.com/in/arun-kumar-0b480a36a/)
 
 ---
 
