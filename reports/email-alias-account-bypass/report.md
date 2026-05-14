@@ -89,11 +89,4 @@ Apply this at:
 
 ---
 
-## 🔗 References
-
-- [OWASP A04 – Insecure Design](https://owasp.org/Top10/A04_2021-Insecure_Design/)
-- [Gmail Address Aliasing](https://support.google.com/mail/answer/22370)
-
----
-
 *Report by Bharathaarunkumar | Responsible Disclosure Practiced*
