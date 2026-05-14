@@ -4,10 +4,7 @@
 |---|---|
 | **Title** | Improper Email Validation Allows Multiple Accounts via Email Alias Bypass |
 | **Type** | Business Logic Flaw / Improper Input Validation |
-| **OWASP** | A04 – Insecure Design |
-| **Severity** | 🔴 High |
-| **Date Found** | 2024 |
-| **Status** | Reported |
+
 
 ---
 
